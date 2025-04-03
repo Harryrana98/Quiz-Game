@@ -1,0 +1,116 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+.hidden {
+  display: none;
+}
+.visible {
+  display: flex;
+}
+
+#wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.screen1 button {
+  padding: 15px 25px;
+  border: none;
+  border-radius: 15px;
+  background-color: blue;
+  color: #fff;
+  font-weight: 600;
+  font-size: medium;
+  cursor: pointer;
+  box-shadow: 0px 0px 20px 1px deepskyblue;
+}
+
+/* .screen1 button:hover{
+  transition: all 2ms;
+  transform: rotatex(120deg);
+} */
+
+.nextDiv button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 15px;
+  background-color: blue;
+  color: #fff;
+  font-weight: 600;
+  font-size: medium;
+  cursor: pointer;
+  margin-top: 2rem;
+}
+
+.screen2{
+  width: 50%;
+  background-color: bisque;
+  padding: 25px;
+  border-radius: 10px;
+  height: 300px;
+  text-align: center;
+  position: relative;
+}
+
+.timer{
+  position: absolute;
+  top: 10px;
+  right:10px;
+  border-radius: 50%;
+  /* padding: 5px; */
+  width: 40px;
+  height: 40px;
+  background-color: red;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size:x-large;
+}
+
+.question{
+  font-size: 25px;
+  margin-top: 2rem;
+  background-color: green;
+  color: #fff;
+  padding: 5px;
+  border-radius: 20px;
+}
+
+.options{
+  display: flex;
+  justify-content:space-between;
+  flex-wrap: wrap;
+}
+.options button{
+  /* padding: 10px 20px; */
+  border: none;
+  background-color: beige;
+  margin: 10px;
+  width: 100px;
+  height: 40px;
+  border-radius: 15px;
+  font-size: medium;
+  cursor: pointer;
+  margin-top: 3rem;
+}
+
+.screen3{
+  text-align: center;
+}
+
+.screen3 h3{
+  font-size: 35px;
+  color: goldenrod;
+}
+
+.screen3 h4{
+  color: green;
+  margin-top: 1rem;
+  font-size: 30px;
+}
