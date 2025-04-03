@@ -46,6 +46,7 @@ startQuizButton.addEventListener("click", () => {
   screen2.classList.remove("hidden");
 
   timerPara.innerText = timer;
+  timeline()
   displayQuestionAndOptions();
   userNextBtn()
  
@@ -66,6 +67,7 @@ startQuizButton.addEventListener("click", () => {
         //CHANGE QUESTION
         questionNumber++;
         displayQuestionAndOptions();
+        blinkTimeline()
       }
     } else {
       timerPara.innerText = --timer;
@@ -122,6 +124,22 @@ function userNextBtn() {
   });
 }
 
-// function backColorOpt{
-// if()
-// }
+function timeline() {
+  const timelineDiv = document.createElement("div");
+  timelineDiv.classList.add("timelineDiv");
+
+  for (let i = 0; i < questions.length; i++) {
+    const circle = document.createElement("div");
+    circle.classList.add("circle");
+    if (i === 0) circle.classList.add("active");
+    circle.innerText = i + 1;
+    timelineDiv.append(circle);
+  }
+  screen2.prepend(timelineDiv);
+}
+
+function blinkTimeline() {
+  const circles = document.querySelectorAll(".circle");
+  circles.forEach((circle) => circle.classList.remove("active"));
+  circles[questionNumber].classList.add("active");
+}
