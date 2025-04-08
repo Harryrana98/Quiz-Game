@@ -36,6 +36,9 @@ const timerPara = document.querySelector(".timer");
 const options = document.querySelectorAll(".options button");
 const scoreSpan = document.querySelector(".screen3 span");
 const nextDiv = document.querySelector(".nextDiv");
+const kbc = document.querySelector("#kbc");
+const leader = document.querySelector("#leaderBoard");
+
 let questionNumber = 0;
 let timer = 5;
 let score = 0;
@@ -213,3 +216,7 @@ if (questionNumber >= questions.length) {
 
 }
 }
+
+kbc.addEventListener("click",function(){
+  screen1.classList.add("visible")
+})
