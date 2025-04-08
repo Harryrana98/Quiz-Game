@@ -27,6 +27,7 @@ const questions = [
 ];
 
 const startQuizButton = document.querySelector(".screen1 button");
+const input = document.querySelector("#input");
 const screen1 = document.querySelector(".screen1");
 const screen2 = document.querySelector(".screen2");
 const screen3 = document.querySelector(".screen3");
@@ -39,17 +40,30 @@ let questionNumber = 0;
 let timer = 5;
 let score = 0;
 let interval;
+let localArr = [];
 
-startQuizButton.addEventListener("click", () => {
+startQuizButton.addEventListener("click", (e) => {
+  e.preventDefault();
+  const inputvalue = input.value;
+  const localobj = {
+    name: inputvalue,
+    date: new Date().toLocaleString(),
+    score: score,
+  };
+  localArr.push(localobj);
+  localStorage.setItem("localArr", JSON.stringify(localArr));
+  input.value = "";
+  console.log(localArr);
+  
+
   //   screen1.className = "hidden";
   screen1.classList.add("hidden");
   screen2.classList.remove("hidden");
 
   timerPara.innerText = timer;
-  timeline()
+  timeline();
   displayQuestionAndOptions();
-  userNextBtn()
- 
+  userNextBtn();
 
   interval = setInterval(() => {
     if (timer === 1) {
@@ -67,7 +81,7 @@ startQuizButton.addEventListener("click", () => {
         //CHANGE QUESTION
         questionNumber++;
         displayQuestionAndOptions();
-        blinkTimeline()
+        blinkTimeline();
       }
     } else {
       timerPara.innerText = --timer;
@@ -80,7 +94,6 @@ startQuizButton.addEventListener("click", () => {
 for (let i = 0; i < options.length; i++) {
   options[i].addEventListener("click", (e) => {
     let userAnswer = e.target.innerText;
-    console.log(userAnswer);
 
     //MATCH WITH CORRECT ANSWER
     if (typeof questions[questionNumber].answer === "number") {
@@ -88,8 +101,11 @@ for (let i = 0; i < options.length; i++) {
     }
 
     if (questions[questionNumber].answer === userAnswer) {
-      console.log("answer sahi hai");
-      score++;
+      ++score;
+      let savedData = JSON.parse(localStorage.getItem("localArr"));
+      savedData[savedData.length - 1].score = score;
+      localStorage.setItem("localArr", JSON.stringify(savedData));
+
       // options.style.backgroundColor="green"
       // scoreSpan.innerText++
     }
@@ -97,10 +113,18 @@ for (let i = 0; i < options.length; i++) {
 }
 
 function displayQuestionAndOptions() {
-  questionPara.innerText = questions[questionNumber].question;
-  for (let i = 0; i < options.length; i++) {
-    options[i].innerText = questions[questionNumber].options[i];
-    
+  if (questionNumber >= questions.length - 1) {
+    // NO MORE QUESTIONS TO DISPLAY, CLEAR EVERYTHING
+    clearInterval(interval);
+    screen2.classList.add("hidden");
+    screen3.classList.remove("hidden");
+    scoreSpan.innerText = score;
+    nextDiv.innerText = "";
+  } else {
+    questionPara.innerText = questions[questionNumber].question;
+    for (let i = 0; i < options.length; i++) {
+      options[i].innerText = questions[questionNumber].options[i];
+    }
   }
 }
 
@@ -108,14 +132,13 @@ function userNextBtn() {
   const nextBtn = document.createElement("button");
   nextBtn.innerText = "Submit";
   nextDiv.append(nextBtn);
-  nextBtn.addEventListener("click",function(){
-
-    if (questionNumber >= questions.length - 1){
+  nextBtn.addEventListener("click", function () {
+    if (questionNumber >= questions.length - 1) {
       clearInterval(interval);
-        screen2.classList.add("hidden");
-        screen3.classList.remove("hidden");
-        scoreSpan.innerText = score;
-        nextDiv.innerText = "";
+      screen2.classList.add("hidden");
+      screen3.classList.remove("hidden");
+      scoreSpan.innerText = score;
+      nextDiv.innerText = "";
     }
     timer = 5;
     timerPara.innerText = timer;
