@@ -115,8 +115,9 @@ startQuizButton.addEventListener("click", (e) => {
 
 for (let i = 0; i < options.length; i++) {
   options[i].addEventListener("click", (e) => {
-    let userAnswer = e.target.innerText;
 
+    let userAnswer = e.target.innerText;
+    
     // option.disabled=true
     //MATCH WITH CORRECT ANSWER
     if (typeof questions[questionNumber].answer === "number") {
@@ -129,6 +130,7 @@ for (let i = 0; i < options.length; i++) {
       let savedData = JSON.parse(localStorage.getItem("localArr"));
       savedData[savedData.length - 1].score = score;
       localStorage.setItem("localArr", JSON.stringify(savedData));
+      userAnswer.style.backgroundColor="red"  
       // userAnswer.style.backgroundColor="red"
 
 
