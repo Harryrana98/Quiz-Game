@@ -40,6 +40,7 @@ let questionNumber = 0;
 let timer = 5;
 let score = 0;
 let interval;
+let localobj={}
 let localArr = localStorage.getItem("localArr")!==null ? JSON.parse(localStorage.getItem("localArr")): [];
 
 
@@ -55,10 +56,10 @@ startQuizButton.addEventListener("click", (e) => {
     nextDiv.innerHTML = "";
 
     const inputvalue = input.value;
-    const localobj = {
+    localobj = {
       name: inputvalue,
       date: new Date().toLocaleString(),
-      score: score,
+      score: 0,
     };
 
     localArr.push(localobj);
@@ -124,6 +125,7 @@ for (let i = 0; i < options.length; i++) {
 
     if (questions[questionNumber].answer === userAnswer) {
       ++score;
+      localobj.score=score
       let savedData = JSON.parse(localStorage.getItem("localArr"));
       savedData[savedData.length - 1].score = score;
       localStorage.setItem("localArr", JSON.stringify(savedData));
