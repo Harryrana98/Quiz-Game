@@ -40,53 +40,74 @@ let questionNumber = 0;
 let timer = 5;
 let score = 0;
 let interval;
-let localArr = [];
+let localArr = localStorage.getItem("localArr")!==null ? JSON.parse(localStorage.getItem("localArr")): [];
+
+
 
 startQuizButton.addEventListener("click", (e) => {
   e.preventDefault();
-  const inputvalue = input.value;
-  const localobj = {
-    name: inputvalue,
-    date: new Date().toLocaleString(),
-    score: score,
-  };
-  localArr.push(localobj);
-  localStorage.setItem("localArr", JSON.stringify(localArr));
-  input.value = "";
-  console.log(localArr);
-  
+  if (input.value != "") {
 
-  //   screen1.className = "hidden";
-  screen1.classList.add("hidden");
-  screen2.classList.remove("hidden");
+    questionNumber = 0;
+    timer = 5;
+    score = 0;
+    clearInterval(interval);
+    nextDiv.innerHTML = "";
 
-  timerPara.innerText = timer;
-  timeline();
-  displayQuestionAndOptions();
-  userNextBtn();
+    const inputvalue = input.value;
+    const localobj = {
+      name: inputvalue,
+      date: new Date().toLocaleString(),
+      score: score,
+    };
 
-  interval = setInterval(() => {
-    if (timer === 1) {
-      if (questionNumber >= questions.length - 1) {
-        // NO MORE QUESTIONS TO DISPLAY, CLEAR EVERYTHING
-        clearInterval(interval);
-        screen2.classList.add("hidden");
-        screen3.classList.remove("hidden");
-        scoreSpan.innerText = score;
-        nextDiv.innerText = "";
+    localArr.push(localobj);
+    localStorage.setItem("localArr", JSON.stringify(localArr));
+    input.value = "";
+    console.log(localArr);
+
+    //   screen1.className = "hidden";
+    screen1.classList.add("hidden");
+    screen2.classList.remove("hidden");
+
+    timerPara.innerText = timer;
+    timeline();
+    displayQuestionAndOptions();
+    userNextBtn();
+
+    interval = setInterval(() => {
+      if (timer === 1) {
+        if (questionNumber >= questions.length - 1) {
+          // NO MORE QUESTIONS TO DISPLAY, CLEAR EVERYTHING
+          clearInterval(interval);
+          screen2.classList.add("hidden");
+          screen3.classList.remove("hidden");
+          scoreSpan.innerText = score;
+          nextDiv.innerText = "";
+          questionNumber = 0;
+
+          setTimeout(() => {
+            screen1.classList.remove("hidden");
+            screen3.classList.add("hidden");
+            // screen2.classList.remove("hidden")
+          }, 5000);
+        } else {
+          //RESET TIMER
+          timer = 5;
+          timerPara.innerText = timer;
+          //CHANGE QUESTION
+          questionNumber++;
+          displayQuestionAndOptions();
+          blinkTimeline();
+        }
       } else {
-        //RESET TIMER
-        timer = 5;
-        timerPara.innerText = timer;
-        //CHANGE QUESTION
-        questionNumber++;
-        displayQuestionAndOptions();
-        blinkTimeline();
+        timerPara.innerText = --timer;
       }
-    } else {
-      timerPara.innerText = --timer;
-    }
-  }, 1000);
+    }, 1000);
+  } else {
+    startQuizButton.disabled = "";
+    alert("please enter your name");
+  }
 });
 
 // OPTION CLICK MECHANISM
@@ -95,6 +116,7 @@ for (let i = 0; i < options.length; i++) {
   options[i].addEventListener("click", (e) => {
     let userAnswer = e.target.innerText;
 
+    // option.disabled=true
     //MATCH WITH CORRECT ANSWER
     if (typeof questions[questionNumber].answer === "number") {
       userAnswer = Number(userAnswer);
@@ -105,6 +127,8 @@ for (let i = 0; i < options.length; i++) {
       let savedData = JSON.parse(localStorage.getItem("localArr"));
       savedData[savedData.length - 1].score = score;
       localStorage.setItem("localArr", JSON.stringify(savedData));
+      // userAnswer.style.backgroundColor="red"
+
 
       // options.style.backgroundColor="green"
       // scoreSpan.innerText++
@@ -113,7 +137,7 @@ for (let i = 0; i < options.length; i++) {
 }
 
 function displayQuestionAndOptions() {
-  if (questionNumber >= questions.length - 1) {
+  if (questionNumber >= questions.length) {
     // NO MORE QUESTIONS TO DISPLAY, CLEAR EVERYTHING
     clearInterval(interval);
     screen2.classList.add("hidden");
@@ -139,16 +163,26 @@ function userNextBtn() {
       screen3.classList.remove("hidden");
       scoreSpan.innerText = score;
       nextDiv.innerText = "";
+      setTimeout(() => {
+        screen1.classList.remove("hidden");
+        screen3.classList.add("hidden");
+        // screen2.classList.remove("hidden")
+      }, 5000);
     }
     timer = 5;
     timerPara.innerText = timer;
     questionNumber++;
     displayQuestionAndOptions();
+    blinkTimeline();
   });
 }
 
 function timeline() {
+  const oldTimeline = document.querySelector(".timelineDiv");
+  if (oldTimeline) oldTimeline.remove();
+
   const timelineDiv = document.createElement("div");
+
   timelineDiv.classList.add("timelineDiv");
 
   for (let i = 0; i < questions.length; i++) {
@@ -162,7 +196,16 @@ function timeline() {
 }
 
 function blinkTimeline() {
+if (questionNumber >= questions.length) {
+  clearInterval(interval);
+      screen2.classList.add("hidden");
+      screen3.classList.remove("hidden");
+      scoreSpan.innerText = score;
+      nextDiv.innerText = ""; 
+}else{
   const circles = document.querySelectorAll(".circle");
   circles.forEach((circle) => circle.classList.remove("active"));
   circles[questionNumber].classList.add("active");
+
+}
 }
