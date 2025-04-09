@@ -138,6 +138,7 @@ header h1 {
 }
 
 .screen3 h3 {
+  margin-top: 5rem;
   font-size: 35px;
   color: goldenrod;
 }

@@ -79,6 +79,7 @@ startQuizButton.addEventListener("click", (e) => {
     timeline();
     displayQuestionAndOptions();
     userNextBtn();
+    removeBackgroundColor()
 
     interval = setInterval(() => {
       if (timer === 1) {
@@ -90,10 +91,12 @@ startQuizButton.addEventListener("click", (e) => {
           scoreSpan.innerText = score;
           nextDiv.innerText = "";
           questionNumber = 0;
+          removeBackgroundColor()
 
           setTimeout(() => {
             screen1.classList.remove("hidden");
             screen3.classList.add("hidden");
+            removeBackgroundColor()
             // screen2.classList.remove("hidden")
           }, 5000);
         } else {
@@ -198,6 +201,7 @@ function userNextBtn() {
     questionNumber++;
     displayQuestionAndOptions();
     blinkTimeline();
+    removeBackgroundColor()
   });
 }
 
@@ -240,8 +244,16 @@ kbc.addEventListener("click", function () {
 });
 
 leader.addEventListener("click", function () {
-  let getData = JSON.parse(localStorage.getItem("localArr"));
+  
   leaderDiv.innerText = "";
+  let getData = JSON.parse(localStorage.getItem("localArr"));
+  if (!getData || getData.length === 0) {
+    alert("Please play the quiz first!");
+    return;
+  }
+  else{
+
+  
   leaderDiv.style.display = "block";
 
   getData.sort((a, b) => b.score - a.score);
@@ -276,6 +288,7 @@ leader.addEventListener("click", function () {
 
     let cell1 = document.createElement("td");
     cell1.innerText = ArrData.name;
+    cell1.style.textTransform="capitalize"
     cell1.style.border = "1px solid black";
     cell1.style.padding = "8px";
 
@@ -294,10 +307,17 @@ leader.addEventListener("click", function () {
   });
   table.append(tableHead, tbody);
   leaderDiv.append(table);
+}
 });
 
+
 leader.addEventListener("dblclick", function () {
-  leaderDiv.style.display = "none";
+  const confirmReset = confirm("Do you want to reset the leaderboard?");
+  if (confirmReset) {
+    localStorage.removeItem("localArr");
+    alert("Leaderboard has been reset!");
+    leaderDiv.style.display = "none";
+  }
 });
 
 window.addEventListener("load", function () {
