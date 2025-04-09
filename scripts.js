@@ -38,20 +38,22 @@ const scoreSpan = document.querySelector(".screen3 span");
 const nextDiv = document.querySelector(".nextDiv");
 const kbc = document.querySelector("#kbc");
 const leader = document.querySelector("#leaderBoard");
+const leaderDiv = document.querySelector(".leader");
+const option = document.querySelector(".option");
 
 let questionNumber = 0;
 let timer = 5;
 let score = 0;
 let interval;
-let localobj={}
-let localArr = localStorage.getItem("localArr")!==null ? JSON.parse(localStorage.getItem("localArr")): [];
-
-
+let localobj = {};
+let localArr =
+  localStorage.getItem("localArr") !== null
+    ? JSON.parse(localStorage.getItem("localArr"))
+    : [];
 
 startQuizButton.addEventListener("click", (e) => {
   e.preventDefault();
   if (input.value != "") {
-
     questionNumber = 0;
     timer = 5;
     score = 0;
@@ -68,9 +70,8 @@ startQuizButton.addEventListener("click", (e) => {
     localArr.push(localobj);
     localStorage.setItem("localArr", JSON.stringify(localArr));
     input.value = "";
-    console.log(localArr);
+    // console.log(localArr);
 
-    //   screen1.className = "hidden";
     screen1.classList.add("hidden");
     screen2.classList.remove("hidden");
 
@@ -103,6 +104,7 @@ startQuizButton.addEventListener("click", (e) => {
           questionNumber++;
           displayQuestionAndOptions();
           blinkTimeline();
+          removeBackgroundColor();
         }
       } else {
         timerPara.innerText = --timer;
@@ -114,33 +116,48 @@ startQuizButton.addEventListener("click", (e) => {
   }
 });
 
+function removeBackgroundColor() {
+  for (let i = 0; i < options.length; i++) {
+    options[i].classList.remove("red");
+    options[i].classList.remove("green");
+    options[i].disabled = false;
+  }
+}
+
 // OPTION CLICK MECHANISM
 
 for (let i = 0; i < options.length; i++) {
   options[i].addEventListener("click", (e) => {
-
     let userAnswer = e.target.innerText;
-    
-    // option.disabled=true
+
+    for (let j = 0; j < options.length; j++) 
+    {
+      options[j].disabled = true;
+    }
+   
+    // options[i].disabled=true
+    console.log(userAnswer);
+
     //MATCH WITH CORRECT ANSWER
     if (typeof questions[questionNumber].answer === "number") {
       userAnswer = Number(userAnswer);
     }
+    if (questions[questionNumber].answer === userAnswer) {
+      options[i].classList.add("green");
+    } else {
+      options[i].classList.add("red");
+    }
 
     if (questions[questionNumber].answer === userAnswer) {
       ++score;
-      localobj.score=score
+      localobj.score = score;
       let savedData = JSON.parse(localStorage.getItem("localArr"));
       savedData[savedData.length - 1].score = score;
       localStorage.setItem("localArr", JSON.stringify(savedData));
-      userAnswer.style.backgroundColor="red"  
-      // userAnswer.style.backgroundColor="red"
-
-
-      // options.style.backgroundColor="green"
-      // scoreSpan.innerText++
+      
     }
   });
+ 
 }
 
 function displayQuestionAndOptions() {
@@ -203,20 +220,86 @@ function timeline() {
 }
 
 function blinkTimeline() {
-if (questionNumber >= questions.length) {
-  clearInterval(interval);
-      screen2.classList.add("hidden");
-      screen3.classList.remove("hidden");
-      scoreSpan.innerText = score;
-      nextDiv.innerText = ""; 
-}else{
-  const circles = document.querySelectorAll(".circle");
-  circles.forEach((circle) => circle.classList.remove("active"));
-  circles[questionNumber].classList.add("active");
-
+  if (questionNumber >= questions.length) {
+    clearInterval(interval);
+    screen2.classList.add("hidden");
+    screen3.classList.remove("hidden");
+    scoreSpan.innerText = score;
+    nextDiv.innerText = "";
+  } else {
+    const circles = document.querySelectorAll(".circle");
+    circles.forEach((circle) => circle.classList.remove("active"));
+    circles[questionNumber].classList.add("active");
+  }
 }
-}
 
-kbc.addEventListener("click",function(){
-  screen1.classList.add("visible")
-})
+kbc.addEventListener("click", function () {
+  screen1.classList.remove("hidden");
+  screen2.classList.add("hidden");
+  leaderDiv.style.display = "none";
+});
+
+leader.addEventListener("click", function () {
+  let getData = JSON.parse(localStorage.getItem("localArr"));
+  leaderDiv.innerText = "";
+  leaderDiv.style.display = "block";
+
+  getData.sort((a, b) => b.score - a.score);
+
+  let table = document.createElement("table");
+  table.className = "table";
+  table.style.fontSize = "20px";
+  table.style.borderCollapse = "collapse";
+  table.style.width = "100%";
+
+  let tableHead = document.createElement("thead");
+  let tableRow = document.createElement("tr");
+
+  let header = ["Name", "Date", "Score"];
+
+  header.forEach((deta) => {
+    let th = document.createElement("th");
+    th.innerText = deta;
+    th.style.border = "1px solid black";
+    th.style.padding = "8px";
+    th.className = "th";
+    tableRow.append(th);
+  });
+  tableHead.appendChild(tableRow);
+
+  let tbody = document.createElement("tbody");
+  tbody.className = "tbody";
+  tbody.style.textAlign = "center";
+
+  getData.forEach((ArrData) => {
+    let dataRow = document.createElement("tr");
+
+    let cell1 = document.createElement("td");
+    cell1.innerText = ArrData.name;
+    cell1.style.border = "1px solid black";
+    cell1.style.padding = "8px";
+
+    let cell2 = document.createElement("td");
+    cell2.innerText = ArrData.date;
+    cell2.style.padding = "8px";
+    cell2.style.border = "1px solid black";
+
+    let cell3 = document.createElement("td");
+    cell3.innerText = ArrData.score;
+    cell3.style.border = "1px solid black";
+    cell3.style.padding = "8px";
+
+    dataRow.append(cell1, cell2, cell3);
+    tbody.appendChild(dataRow);
+  });
+  table.append(tableHead, tbody);
+  leaderDiv.append(table);
+});
+
+leader.addEventListener("dblclick", function () {
+  leaderDiv.style.display = "none";
+});
+
+window.addEventListener("load", function () {
+  localStorage.clear();
+});
