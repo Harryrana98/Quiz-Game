@@ -46,6 +46,22 @@ let timer = 5;
 let score = 0;
 let interval;
 let localobj = {};
+let randomOrder=[]
+let temp=[]
+
+for(let i=0;i<questions.length;i++){
+  randomOrder.push(getrandomvalue())
+}
+function getrandomvalue(){
+  let randomvalue=Math.floor(Math.random()*questions.length)
+  if(temp.includes(randomvalue))return getrandomvalue()
+    else{
+  temp.push(randomvalue)
+   return randomvalue
+  }
+}
+
+
 let localArr =
   localStorage.getItem("localArr") !== null
     ? JSON.parse(localStorage.getItem("localArr"))
@@ -54,7 +70,7 @@ let localArr =
 startQuizButton.addEventListener("click", (e) => {
   e.preventDefault();
   if (input.value != "") {
-    questionNumber = 0;
+    // questionNumber = 0;
     timer = 5;
     score = 0;
     clearInterval(interval);
@@ -96,6 +112,7 @@ startQuizButton.addEventListener("click", (e) => {
           setTimeout(() => {
             screen1.classList.remove("hidden");
             screen3.classList.add("hidden");
+            randomOrder[ questionNumber++];
             removeBackgroundColor()
             // screen2.classList.remove("hidden")
           }, 5000);
@@ -104,7 +121,7 @@ startQuizButton.addEventListener("click", (e) => {
           timer = 5;
           timerPara.innerText = timer;
           //CHANGE QUESTION
-          questionNumber++;
+          randomOrder[ questionNumber++];
           displayQuestionAndOptions();
           blinkTimeline();
           removeBackgroundColor();
@@ -172,9 +189,11 @@ function displayQuestionAndOptions() {
     scoreSpan.innerText = score;
     nextDiv.innerText = "";
   } else {
-    questionPara.innerText = questions[questionNumber].question;
+
+    // let randmQuiz=getRandomValue()
+    questionPara.innerText = questions[randomOrder[questionNumber]].question;
     for (let i = 0; i < options.length; i++) {
-      options[i].innerText = questions[questionNumber].options[i];
+      options[i].innerText = questions[randomOrder[questionNumber]].options[i];
     }
   }
 }
@@ -323,3 +342,4 @@ leader.addEventListener("dblclick", function () {
 window.addEventListener("load", function () {
   localStorage.clear();
 });
+
