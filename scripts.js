@@ -118,7 +118,7 @@ startQuizButton.addEventListener("click", (e) => {
           }, 5000);
         } else {
           //RESET TIMER
-          timer = 5;
+          timer =   5;
           timerPara.innerText = timer;
           //CHANGE QUESTION
           randomOrder[ questionNumber++];
@@ -159,16 +159,16 @@ for (let i = 0; i < options.length; i++) {
     console.log(userAnswer);
 
     //MATCH WITH CORRECT ANSWER
-    if (typeof questions[questionNumber].answer === "number") {
+    if (typeof questions[randomOrder[questionNumber]].answer === "number") {
       userAnswer = Number(userAnswer);
     }
-    if (questions[questionNumber].answer === userAnswer) {
+    if (questions[randomOrder[questionNumber]].answer === userAnswer) {
       options[i].classList.add("green");
     } else {
       options[i].classList.add("red");
     }
 
-    if (questions[questionNumber].answer === userAnswer) {
+    if (questions[randomOrder[questionNumber]].answer === userAnswer) {
       ++score;
       localobj.score = score;
       let savedData = JSON.parse(localStorage.getItem("localArr"));
